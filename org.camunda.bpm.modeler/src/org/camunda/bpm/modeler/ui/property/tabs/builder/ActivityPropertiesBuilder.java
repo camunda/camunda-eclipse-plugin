@@ -6,6 +6,7 @@ import org.camunda.bpm.modeler.ui.property.tabs.util.HelpText;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
 import org.camunda.bpm.modeler.ui.util.Browser;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -58,26 +59,31 @@ public class ActivityPropertiesBuilder extends RetryEnabledPropertiesBuilder {
 
 		// <async-link> <!-- Async link and help text -->
 		
-		final Button asyncBeforeCheckbox = createCheckbox(ASYNC_BEFORE_LABEL, HelpText.ASYNC_FLAG);
+		Button asyncBeforeCheckbox = createCheckbox(ASYNC_BEFORE_LABEL, HelpText.ASYNC_FLAG);
 		new AsyncFlagButtonBinding(bo, asyncBeforeFeature, asyncBeforeCheckbox).establish();
 		
-		final Button asyncAfterCheckbox = createCheckbox(ASYNC_AFTER_LABEL, HelpText.ASYNC_FLAG, HelpText.SUPPORTED_VERSION_NOTE_7_2);
+		Button asyncAfterCheckbox = createCheckbox(ASYNC_AFTER_LABEL, HelpText.ASYNC_FLAG, HelpText.SUPPORTED_VERSION_NOTE_7_2);
 		new AsyncFlagButtonBinding(bo, ASYNC_AFTER_FEATURE, asyncAfterCheckbox).establish();
 		
 		// </async-link>
 
-		// exclusive jobs flag, default value 'true'
-		final Button exclusiveCheckbox = createCheckbox(EXCLUSIVE_LABEL, HelpText.EXCLUSIVE_FLAG);
-		new BooleanButtonBinding(bo, EXCLUSIVE_FEATURE, exclusiveCheckbox).establish();
-		exclusiveCheckbox.setSelection(exclusive);
-
-		final Text retryText = createRetryCycleText();
-
+		Button exclusiveCheckbox = null;
+		if (!(bo instanceof StartEvent)) {
+			// exclusive jobs flag, default value 'true'
+			exclusiveCheckbox = createCheckbox(EXCLUSIVE_LABEL, HelpText.EXCLUSIVE_FLAG);
+			new BooleanButtonBinding(bo, EXCLUSIVE_FEATURE, exclusiveCheckbox).establish();
+			exclusiveCheckbox.setSelection(exclusive);
+		}
+			
+		Text retryText = createRetryCycleText();
+			
 		// initial setup of GUI elements
 		boolean enable = asyncBefore || asyncAfter;
-		exclusiveCheckbox.setEnabled(enable);
 		retryText.setEnabled(enable);
-
+		if (exclusiveCheckbox != null) {
+			exclusiveCheckbox.setEnabled(enable);
+		}
+			
 		asyncBeforeCheckbox.addListener(SWT.Selection, new AsyncCheckboxListener(asyncBeforeCheckbox, asyncAfterCheckbox, exclusiveCheckbox, retryText));
 		asyncAfterCheckbox.addListener(SWT.Selection, new AsyncCheckboxListener(asyncBeforeCheckbox, asyncAfterCheckbox, exclusiveCheckbox, retryText));
 	}

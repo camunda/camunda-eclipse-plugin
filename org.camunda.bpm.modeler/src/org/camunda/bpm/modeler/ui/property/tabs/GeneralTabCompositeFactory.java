@@ -217,6 +217,7 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 	private void createEventComposite(Event event) {
 		if (event instanceof StartEvent) {
 			new StartEventPropertiesBuilder(parent, section, (StartEvent) event).create();
+			new ActivityPropertiesBuilder(parent, section, event).create();
 		}
 
 		if (event instanceof IntermediateCatchEvent || event instanceof BoundaryEvent) {
