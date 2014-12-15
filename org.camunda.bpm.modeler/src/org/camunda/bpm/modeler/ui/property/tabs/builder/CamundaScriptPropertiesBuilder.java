@@ -37,6 +37,7 @@ public class CamundaScriptPropertiesBuilder extends AbstractPropertiesBuilder<Ba
 	protected static final EStructuralFeature SCRIPT_FORMAT_FEATURE = ModelPackage.eINSTANCE.getScriptType_ScriptFormat();
 	protected static final EStructuralFeature SCRIPT_RESOURCE_FEATURE = ModelPackage.eINSTANCE.getScriptType_Resource();
 	protected static final EStructuralFeature SCRIPT_TEXT_FEATURE = ModelPackage.eINSTANCE.getScriptType_Text();
+	protected static final EStructuralFeature SCRIPT_MIXED_FEATURE = ModelPackage.eINSTANCE.getScriptType_Mixed();
 
 	private static final EStructuralFeature[] TYPE_FEATURES = new EStructuralFeature[] { 
 		SCRIPT_RESOURCE_FEATURE,
@@ -412,7 +413,8 @@ public class CamundaScriptPropertiesBuilder extends AbstractPropertiesBuilder<Ba
 
 			if (feature != null) {
 				return SCRIPT_RESOURCE_FEATURE.equals(feature)
-						|| SCRIPT_TEXT_FEATURE.equals(feature);
+						|| SCRIPT_TEXT_FEATURE.equals(feature)
+						|| SCRIPT_MIXED_FEATURE.equals(feature);
 			}
 			
 			return false;
