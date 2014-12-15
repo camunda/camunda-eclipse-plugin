@@ -51,6 +51,9 @@ import org.eclipse.swt.widgets.Text;
  */
 public class FormFieldDetailsDialog extends ModelerDialog {
 
+	protected static final int SHELL_WIDTH = 600;
+	protected static final int SHELL_HEIGHT = 400;
+	
 	private static final String[] PROPERTIES_TABLE_HEADERS = { "id", "value"};
 
 	private static final String[] VALIDATION_TABLE_HEADERS = { "name", "config"};
@@ -323,7 +326,7 @@ public class FormFieldDetailsDialog extends ModelerDialog {
 	 */
 	private void computeSize() {
 		Point size = getShell().computeSize( SWT.DEFAULT, SWT.DEFAULT );
-		getShell().setSize( size );
+		getShell().setSize(SHELL_WIDTH, size.y);
 	}
 
 	private class IdValidatingStringTextBinding extends ValidatingStringTextBinding {
@@ -347,13 +350,21 @@ public class FormFieldDetailsDialog extends ModelerDialog {
 
 	@Override
 	protected void configureShell(final Shell newShell) {
-	   super.configureShell(newShell);
-	   newShell.setText("Details");
+		super.configureShell(newShell);
+		newShell.setText("Details");
+		newShell.setSize(SHELL_WIDTH, SHELL_HEIGHT);
 
-	   // set the dialog location
-	   Point shellSize = newShell.getSize();
-	   Rectangle screen = newShell.getMonitor().getBounds();
-	   newShell.setLocation((screen.width-shellSize.x), (screen.height-shellSize.y)/2);
+		Point shellSize = newShell.getSize();
+		Rectangle screen = newShell.getMonitor().getBounds();
+
+		int x = ((screen.width - shellSize.x) / 2) + screen.x;
+		int y = ((screen.height - shellSize.y) / 2) + screen.y - 100;
+
+		if (y <= 0) {
+			y = 50 + screen.y;
+		}
+
+		newShell.setLocation(x, y);
 	}
 
 	@Override

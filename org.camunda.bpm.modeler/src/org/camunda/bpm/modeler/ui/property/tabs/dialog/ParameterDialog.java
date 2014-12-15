@@ -171,7 +171,7 @@ public class ParameterDialog extends ModelerDialog {
 	   Rectangle screen = newShell.getMonitor().getBounds();
 	   
 	   int x = ((screen.width - shellSize.x) / 2) + screen.x;
-	   int y = ((screen.height - shellSize.y) / 2) + screen.y - 150;
+	   int y = ((screen.height - shellSize.y) / 2) + screen.y - 100;
 	   
 	   if (y <= 0) {
 		   y = 50 + screen.y;
