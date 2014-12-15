@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Text;
 public class CamundaScriptPropertiesBuilder extends AbstractPropertiesBuilder<BaseElement> {
 	
 	protected static final String SCRIPT_FORMAT_LABEL = "Script Format";
-	protected static final String SCRIPT_RESOURCE_LABEL = "Resource";
+	protected static final String SCRIPT_RESOURCE_LABEL = "Script Resource";
 	protected static final String SCRIPT_LABEL = "Script";
 	
 	protected static final String EMPTY_STRING = "";
