@@ -247,7 +247,7 @@ public class ParameterDialog extends ModelerDialog {
 	
 	protected CCombo createTypeDropDown(final Composite parent) {
 		// create editable drop down
-		CCombo dropDown = PropertyUtil.createDropDown(section, parent, PARAMETER_TYPE_LABEL, SWT.BORDER);
+		CCombo dropDown = PropertyUtil.createDropDown(section, parent, PARAMETER_TYPE_LABEL);
 		
 		for (int i=0; i < SUPPORTED_TYPES.length; i++) {
 			dropDown.add(SUPPORTED_TYPES[i]);
