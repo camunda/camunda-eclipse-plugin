@@ -17,7 +17,16 @@ public class IsManyAttributeAnyChildChangeFilter extends AbstractFeatureChangeFi
 		super(object, feature);
 
 		if (!feature.isMany()) {
-			throw new IllegalArgumentException("Feature is not a many");
+			
+			int upper = feature.getUpperBound();
+			
+			// in the ecore model it is possible to set the upper bound
+			// to -2 (we used it for example in case of the executionListener
+			// reference). this should be also handled as many!
+			if (!(upper < 0)) {
+				throw new IllegalArgumentException("Feature is not a many");
+			}
+			
 		}
 	}
 
