@@ -108,7 +108,7 @@ public interface ListType extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Values</em>' attribute list.
 	 * @see org.camunda.bpm.modeler.runtime.engine.model.ModelPackage#getListType_Values()
-	 * @model transient="true" volatile="true" derived="true"
+	 * @model unique="false" transient="true" volatile="true" derived="true"
 	 *        extendedMetaData="kind='element' name='value' namespace='##targetNamespace' group='#value:group'"
 	 * @generated
 	 */
