@@ -93,12 +93,12 @@ public class ExecutionListenerDialog extends ListenerDialog<ExecutionListenerTyp
 
 	@Override
 	protected EStructuralFeature getListenerDelegateExpressionFeature() {
-		return EXECUTION_LISTENER_EXPRESSION_FEATURE;
+		return EXECUTION_LISTENER_DELEGATE_EXPRESSION_FEATURE;
 	}
 
 	@Override
 	protected EStructuralFeature getListenerExpressionFeature() {
-		return EXECUTION_LISTENER_DELEGATE_EXPRESSION_FEATURE;
+		return EXECUTION_LISTENER_EXPRESSION_FEATURE;
 	}
 
 	@Override
