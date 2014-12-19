@@ -25,6 +25,8 @@ import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
+import org.eclipse.bpmn2.IntermediateCatchEvent;
+import org.eclipse.bpmn2.IntermediateThrowEvent;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -78,6 +80,8 @@ public class InputOutputPropertiesBuilder extends AbstractPropertiesBuilder<Base
 		createParameterTable(section, parent, INPUT_PARAMTERS_LABEL, inputOutputfeature, inputParameterFeature, PARAMETER_FEATURES, TABLE_HEADERS);
 		
 		if (insideConnector
+				|| bo instanceof IntermediateCatchEvent 
+				|| bo instanceof IntermediateThrowEvent
 				|| (!(bo instanceof EndEvent) && !bo.eIsSet(Bpmn2Package.eINSTANCE.getActivity_LoopCharacteristics()))) {
 			
 			// output parameters
