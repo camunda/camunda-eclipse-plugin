@@ -6,6 +6,7 @@ import org.camunda.bpm.modeler.ui.property.tabs.util.HelpText;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
 import org.camunda.bpm.modeler.ui.util.Browser;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.EventBasedGateway;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -62,8 +63,11 @@ public class ActivityPropertiesBuilder extends RetryEnabledPropertiesBuilder {
 		Button asyncBeforeCheckbox = createCheckbox(ASYNC_BEFORE_LABEL, HelpText.ASYNC_FLAG);
 		new AsyncFlagButtonBinding(bo, asyncBeforeFeature, asyncBeforeCheckbox).establish();
 		
-		Button asyncAfterCheckbox = createCheckbox(ASYNC_AFTER_LABEL, HelpText.ASYNC_FLAG, HelpText.SUPPORTED_VERSION_NOTE_7_2);
-		new AsyncFlagButtonBinding(bo, ASYNC_AFTER_FEATURE, asyncAfterCheckbox).establish();
+		Button asyncAfterCheckbox = null;
+		if (!(bo instanceof EventBasedGateway)) {
+			asyncAfterCheckbox = createCheckbox(ASYNC_AFTER_LABEL, HelpText.ASYNC_FLAG, HelpText.SUPPORTED_VERSION_NOTE_7_2);
+			new AsyncFlagButtonBinding(bo, ASYNC_AFTER_FEATURE, asyncAfterCheckbox).establish();
+		}
 		
 		// </async-link>
 
@@ -83,9 +87,11 @@ public class ActivityPropertiesBuilder extends RetryEnabledPropertiesBuilder {
 		if (exclusiveCheckbox != null) {
 			exclusiveCheckbox.setEnabled(enable);
 		}
-			
+
 		asyncBeforeCheckbox.addListener(SWT.Selection, new AsyncCheckboxListener(asyncBeforeCheckbox, asyncAfterCheckbox, exclusiveCheckbox, retryText));
-		asyncAfterCheckbox.addListener(SWT.Selection, new AsyncCheckboxListener(asyncBeforeCheckbox, asyncAfterCheckbox, exclusiveCheckbox, retryText));
+		if (asyncAfterCheckbox != null) {
+			asyncAfterCheckbox.addListener(SWT.Selection, new AsyncCheckboxListener(asyncBeforeCheckbox, asyncAfterCheckbox, exclusiveCheckbox, retryText));
+		}
 	}
 	
 	/**
@@ -222,7 +228,7 @@ public class ActivityPropertiesBuilder extends RetryEnabledPropertiesBuilder {
 		@Override
 		public void handleEvent(Event event) {
 			boolean beforeSelected = asyncBeforeCheckbox.getSelection();
-			boolean afterSelected = asyncAfterCheckbox.getSelection();
+			boolean afterSelected = asyncAfterCheckbox != null ? asyncAfterCheckbox.getSelection() : false;
 			
 			boolean enable = beforeSelected || afterSelected;
 			
