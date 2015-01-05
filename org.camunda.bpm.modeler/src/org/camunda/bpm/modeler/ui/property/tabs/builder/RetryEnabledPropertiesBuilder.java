@@ -4,6 +4,7 @@ import static org.camunda.bpm.modeler.core.utils.ExtensionUtil.getExtension;
 import static org.camunda.bpm.modeler.core.utils.ExtensionUtil.removeExtensionByFeature;
 import static org.camunda.bpm.modeler.core.utils.ExtensionUtil.updateExtension;
 
+import org.camunda.bpm.modeler.core.utils.ExtensionUtil;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.runtime.engine.model.fox.FailedJobRetryTimeCycleType;
 import org.camunda.bpm.modeler.runtime.engine.model.fox.FoxFactory;
@@ -14,6 +15,7 @@ import org.camunda.bpm.modeler.ui.property.tabs.binding.change.EAttributeChangeS
 import org.camunda.bpm.modeler.ui.property.tabs.util.HelpText;
 import org.camunda.bpm.modeler.ui.property.tabs.util.PropertyUtil;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -124,6 +126,13 @@ public class RetryEnabledPropertiesBuilder extends AbstractPropertiesBuilder<Bas
 	
 	protected void removeRetryCycle() {
 		removeExtensionByFeature(bo, RETRY_CYCLE_FEATURE);
+		
+		// remove empty extension element
+		EStructuralFeature extensionValuesFeature = bo.eClass().getEStructuralFeature("extensionValues");
+		ExtensionAttributeValue values = ExtensionUtil.getExtensionAttributeValue(bo);
+		if (values != null && (values.getValue() == null || values.getValue().isEmpty())) {
+			bo.eUnset(extensionValuesFeature);
+		}
 	}
 	
 	// commands ///////////////////////////////////////////

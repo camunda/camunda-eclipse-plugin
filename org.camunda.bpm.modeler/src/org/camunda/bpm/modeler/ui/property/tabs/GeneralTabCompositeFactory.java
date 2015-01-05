@@ -9,7 +9,6 @@ import org.camunda.bpm.modeler.ui.property.tabs.builder.IdPropertyBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.IsForCompensationPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.LanePropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.NamePropertyBuilder;
-import org.camunda.bpm.modeler.ui.property.tabs.builder.ParallelGatewayPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.ParticipantPropertiesBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.ProcessIdPropertyBuilder;
 import org.camunda.bpm.modeler.ui.property.tabs.builder.ProcessPropertiesBuilder;
@@ -30,6 +29,7 @@ import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.BusinessRuleTask;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CatchEvent;
+import org.eclipse.bpmn2.ComplexGateway;
 import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
@@ -40,7 +40,6 @@ import org.eclipse.bpmn2.IntermediateCatchEvent;
 import org.eclipse.bpmn2.IntermediateThrowEvent;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.MessageEventDefinition;
-import org.eclipse.bpmn2.ParallelGateway;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.ReceiveTask;
@@ -136,10 +135,9 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 			new DecisionGatewayPropertiesBuilder(parent, section, gateway).create();
 		}
 
-		if (gateway instanceof ParallelGateway) {
-			new ParallelGatewayPropertiesBuilder(parent, section, gateway).create();
+		if (!(gateway instanceof ComplexGateway)) {
+			new ActivityPropertiesBuilder(parent, section, gateway).create();
 		}
-
 	}
 
 	private void createSequenceFlowComposite(SequenceFlow sequenceFlow) {
@@ -172,9 +170,14 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 		}
 	}
 
-	private boolean isTimerEvent(CatchEvent e) {
+	private boolean isTimerEvent(Event e) {
 		EventDefinition timerEventDefinition = ModelUtil.getEventDefinition(e, TimerEventDefinition.class);
 		return timerEventDefinition != null;
+	}
+
+	protected boolean isMessageEvent(Event e) {
+		EventDefinition messageEventDefinition = ModelUtil.getEventDefinition(e, MessageEventDefinition.class);
+		return messageEventDefinition != null;
 	}
 	
 	private void createTaskComposite(Task task) {
@@ -200,7 +203,8 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 			new ReceiveTaskPropertiesBuilder(parent, section, (ReceiveTask) task).create();
 		}
 
-		if (task instanceof ServiceTask ||
+		if (task instanceof Task ||
+			task instanceof ServiceTask ||
 		    task instanceof BusinessRuleTask ||
 		    task instanceof SendTask ||
 		    task instanceof UserTask ||
@@ -217,10 +221,9 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 	private void createEventComposite(Event event) {
 		if (event instanceof StartEvent) {
 			new StartEventPropertiesBuilder(parent, section, (StartEvent) event).create();
-			new ActivityPropertiesBuilder(parent, section, event).create();
 		}
 
-		if (event instanceof IntermediateCatchEvent || event instanceof BoundaryEvent) {
+		if (event instanceof BoundaryEvent) {
 			CatchEvent catchEvent = (CatchEvent) event;
 			if (isTimerEvent(catchEvent)) {
 				createTimerCatchEventComposite(catchEvent);
@@ -235,6 +238,13 @@ public class GeneralTabCompositeFactory extends AbstractTabCompositeFactory<Base
 				new ActivityPropertiesBuilder(parent, section, messageEventDefinition).create();
 			}
 		}
+		
+		if (event instanceof StartEvent ||
+			event instanceof IntermediateCatchEvent ||
+			(event instanceof IntermediateThrowEvent && !isMessageEvent(event)) ||
+			(event instanceof EndEvent && !isMessageEvent(event))) {
+				new ActivityPropertiesBuilder(parent, section, event).create();
+			}
 	}
 	
 	// default fields (ID / Name/ Documentation) ///////////////////////////////////
