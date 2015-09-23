@@ -26,6 +26,7 @@ import org.eclipse.emf.workspace.WorkspaceEditingDomainFactory;
 import org.eclipse.emf.workspace.util.WorkspaceSynchronizer.Delegate;
 import org.eclipse.graphiti.ui.editor.DefaultUpdateBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramBehavior;
+import org.eclipse.graphiti.ui.editor.IDiagramEditorInput;
 import org.eclipse.graphiti.ui.internal.editor.GFWorkspaceCommandStackImpl;
 
 /**
@@ -83,7 +84,7 @@ public class Bpmn2EditorUpdateBehavior extends DefaultUpdateBehavior {
 	}
 
 	@Override
-	public void createEditingDomain() {
+	public void createEditingDomain(IDiagramEditorInput input) {
 		TransactionalEditingDomain editingDomain = createResourceSetAndEditingDomain();
 		initializeEditingDomain(editingDomain);
 	}

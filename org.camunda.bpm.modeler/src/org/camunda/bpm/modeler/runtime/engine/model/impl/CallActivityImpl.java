@@ -184,6 +184,8 @@ public class CallActivityImpl extends org.eclipse.bpmn2.impl.CallActivityImpl im
 				return getCalledElementBinding();
 			case ModelPackage.CALL_ACTIVITY__CALLED_ELEMENT_VERSION:
 				return getCalledElementVersion();
+			case ModelPackage.CALL_ACTIVITY__CALLED_ELEMENT_REF:
+				return getCalledElementRef();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
