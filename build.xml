@@ -111,7 +111,7 @@
 	
 	<target name="build.release">
 		<maven basedir="${checkout.release.path}/${checkout.dir}"
-             options="-Pplatform-indigo -Dmaven.test.skip=true -DskipTests=true -X"
+             options="-Pplatform-mars -Dmaven.test.skip=true -DskipTests=true -X"
              goals="clean install"
              resultproperty="maven.build.result" />
 	</target>
