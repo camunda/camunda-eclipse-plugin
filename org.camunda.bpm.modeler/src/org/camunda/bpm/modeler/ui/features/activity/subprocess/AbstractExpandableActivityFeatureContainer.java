@@ -36,19 +36,11 @@ public abstract class AbstractExpandableActivityFeatureContainer extends Abstrac
 		return new DirectEditActivityFeature(fp) {
 			@Override
 			public void setValue(String value, IDirectEditingContext context) {
-				// get old value for fix below
-				Object businessObject = getBusinessObject(context);
-				String oldValue = getNameValue(businessObject);
-
-				// update the value
-				setNameValue(businessObject, value);
+				setNameValue(getBusinessObject(context), value);
 				PictogramElement e = context.getPictogramElement();
 				updatePictogramElement(((Shape) e).getContainer());
-
-				// fix for missing layout update when editing initial value
-				if (oldValue == null) {
-					layoutPictogramElement(e);
-				}
+				// fix missing layout update when editing value
+				layoutPictogramElement(e);
 			}
 		};
 	}
