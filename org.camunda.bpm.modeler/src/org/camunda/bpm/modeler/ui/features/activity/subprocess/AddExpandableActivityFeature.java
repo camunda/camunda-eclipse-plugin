@@ -17,10 +17,11 @@ import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
 import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.camunda.bpm.modeler.core.utils.StyleUtil;
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddContext;
-import org.eclipse.graphiti.mm.algorithms.Text;
+import org.eclipse.graphiti.mm.algorithms.MultiText;
 import org.eclipse.graphiti.mm.algorithms.styles.Orientation;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -45,14 +46,13 @@ public class AddExpandableActivityFeature<T extends Activity>
 
 		T activity = getBusinessObject(context);
 
-		int width = newShapeBounds.getWidth();
-
 		Shape textShape = peService.createShape(newShape, false);
-		Text text = gaService.createDefaultText(getDiagram(), textShape, activity.getName());
-		gaService.setLocationAndSize(text, 5, 5, width - 10, 15);
+		MultiText text = gaService.createDefaultMultiText(getDiagram(), textShape, activity.getName());
+		gaService.setLocationAndSize(text, 5, 5, newShapeBounds.getWidth() - 10, newShapeBounds.getHeight() - 10);
+
 		StyleUtil.applyStyle(text, activity);
 		text.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
-		text.setVerticalAlignment(Orientation.ALIGNMENT_CENTER);
+		text.setVerticalAlignment(activity instanceof CallActivity ? Orientation.ALIGNMENT_CENTER : Orientation.ALIGNMENT_TOP);
 		link(textShape, activity);
 	}
 	

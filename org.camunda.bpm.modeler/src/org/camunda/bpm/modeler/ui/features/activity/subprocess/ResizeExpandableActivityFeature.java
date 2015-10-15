@@ -17,7 +17,13 @@ import org.camunda.bpm.modeler.ui.features.activity.ResizeActivityFeature;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
+import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
+import org.eclipse.graphiti.mm.algorithms.MultiText;
+import org.eclipse.graphiti.mm.algorithms.styles.Orientation;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.services.IGaService;
 
 /**
  * Expandable activities resize feature.
@@ -42,4 +48,26 @@ public class ResizeExpandableActivityFeature extends ResizeActivityFeature {
 		
 		return super.canResizeShape(context);
 	}
+
+
+	@Override
+	protected void postResize(IResizeShapeContext context) {
+		super.postResize(context);
+
+		IGaService gaService = Graphiti.getGaService();
+
+		ContainerShape containerShape = (ContainerShape) context.getShape();
+		BPMNShape bpmnShape = BusinessObjectUtil.getFirstElementOfType(containerShape, BPMNShape.class);
+
+		// resize the MultiText element (holding the name of the element) appropriately
+		for (PictogramElement pe : containerShape.getChildren()) {
+			GraphicsAlgorithm ga = pe.getGraphicsAlgorithm();
+			if (ga instanceof MultiText) {
+				((MultiText) ga).setVerticalAlignment(!bpmnShape.isIsExpanded() ? Orientation.ALIGNMENT_CENTER : Orientation.ALIGNMENT_TOP);
+				gaService.setLocationAndSize(ga, 5, 5, (int) bpmnShape.getBounds().getWidth() - 10, (int) bpmnShape.getBounds().getHeight() - 10);
+				break;
+			}
+		}
+	}
+
 }
