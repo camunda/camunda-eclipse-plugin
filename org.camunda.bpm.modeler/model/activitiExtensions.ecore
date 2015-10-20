@@ -353,6 +353,7 @@
     <eLiterals name="create"/>
     <eLiterals name="assignment" value="1"/>
     <eLiterals name="complete" value="2"/>
+    <eLiterals name="delete" value="3" literal="delete"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="EventType1">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
