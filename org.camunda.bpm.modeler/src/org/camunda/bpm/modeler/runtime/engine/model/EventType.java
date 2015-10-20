@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package org.camunda.bpm.modeler.runtime.engine.model;
 
@@ -50,7 +46,17 @@ public enum EventType implements Enumerator {
 	 * @generated
 	 * @ordered
 	 */
-	COMPLETE(2, "complete", "complete");
+	COMPLETE(2, "complete", "complete"),
+
+	/**
+	 * The '<em><b>Delete</b></em>' literal object.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #DELETE_VALUE
+	 * @generated
+	 * @ordered
+	 */
+	DELETE(3, "delete", "delete");
 
 	/**
 	 * The '<em><b>Create</b></em>' literal value.
@@ -98,6 +104,21 @@ public enum EventType implements Enumerator {
 	public static final int COMPLETE_VALUE = 2;
 
 	/**
+	 * The '<em><b>Delete</b></em>' literal value.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>Delete</b></em>' literal object isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @see #DELETE
+	 * @model name="delete"
+	 * @generated
+	 * @ordered
+	 */
+	public static final int DELETE_VALUE = 3;
+
+	/**
 	 * An array of all the '<em><b>Event Type</b></em>' enumerators.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -108,6 +129,7 @@ public enum EventType implements Enumerator {
 			CREATE,
 			ASSIGNMENT,
 			COMPLETE,
+			DELETE,
 		};
 
 	/**
@@ -161,6 +183,7 @@ public enum EventType implements Enumerator {
 			case CREATE_VALUE: return CREATE;
 			case ASSIGNMENT_VALUE: return ASSIGNMENT;
 			case COMPLETE_VALUE: return COMPLETE;
+			case DELETE_VALUE: return DELETE;
 		}
 		return null;
 	}
