@@ -23,26 +23,14 @@ import org.eclipse.graphiti.features.IDirectEditingFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.ILayoutFeature;
 import org.eclipse.graphiti.features.IResizeShapeFeature;
-import org.eclipse.graphiti.features.context.IDirectEditingContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
-import org.eclipse.graphiti.mm.pictograms.PictogramElement;
-import org.eclipse.graphiti.mm.pictograms.Shape;
 
 public abstract class AbstractExpandableActivityFeatureContainer extends AbstractActivityFeatureContainer {
 
 	@Override
 	public IDirectEditingFeature getDirectEditingFeature(IFeatureProvider fp) {
-		return new DirectEditActivityFeature(fp) {
-			@Override
-			public void setValue(String value, IDirectEditingContext context) {
-				setNameValue(getBusinessObject(context), value);
-				PictogramElement e = context.getPictogramElement();
-				updatePictogramElement(((Shape) e).getContainer());
-				// fix missing layout update when editing value
-				layoutPictogramElement(e);
-			}
-		};
+		return new DirectEditActivityFeature(fp);
 	}
 
 	@Override
