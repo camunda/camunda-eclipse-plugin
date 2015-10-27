@@ -37,6 +37,7 @@ public class TaskListenerDialog extends ListenerDialog<TaskListenerType> {
 		dropDown.add(EventType.CREATE.getName());
 		dropDown.add(EventType.ASSIGNMENT.getName());
 		dropDown.add(EventType.COMPLETE.getName());
+		dropDown.add(EventType.DELETE.getName());
 		
 		ValidatingStringComboBinding comboBinding = new ValidatingStringComboBinding(listener, TASK_LISTENER_EVENT_FEATURE, dropDown) {
 			
