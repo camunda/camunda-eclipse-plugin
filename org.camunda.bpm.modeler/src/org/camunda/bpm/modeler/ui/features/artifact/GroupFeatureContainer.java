@@ -12,7 +12,11 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.artifact;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.camunda.bpm.modeler.core.features.AbstractBpmn2AddShapeFeature;
+import org.camunda.bpm.modeler.core.features.DefaultBpmn2LayoutShapeFeature;
 import org.camunda.bpm.modeler.core.features.DefaultBpmn2MoveShapeFeature;
 import org.camunda.bpm.modeler.core.features.DefaultBpmn2ResizeShapeFeature;
 import org.camunda.bpm.modeler.core.features.artifact.AbstractCreateArtifactFeature;
@@ -23,6 +27,7 @@ import org.camunda.bpm.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Group;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -35,9 +40,16 @@ import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
-import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
+import org.eclipse.graphiti.features.context.IMoveShapeContext;
+import org.eclipse.graphiti.features.context.IResizeShapeContext;
+import org.eclipse.graphiti.features.context.impl.AddContext;
+import org.eclipse.graphiti.features.context.impl.MoveShapeContext;
+import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.styles.LineStyle;
+import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeService;
@@ -71,17 +83,17 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 
 	@Override
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
-		return null;
+		return new DefaultBpmn2LayoutShapeFeature(fp);
 	}
 
 	@Override
 	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
-		return new DefaultBpmn2MoveShapeFeature(fp);
+		return new MoveGroupFeature(fp);
 	}
 
 	@Override
 	public IResizeShapeFeature getResizeFeature(IFeatureProvider fp) {
-		return new DefaultBpmn2ResizeShapeFeature(fp);
+		return new ResizeGroupFeature(fp);
 	}
 
 	private final class AddGroupFeature extends AbstractBpmn2AddShapeFeature<Group> {
@@ -98,31 +110,45 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 		protected ContainerShape createPictogramElement(IAddContext context, IRectangle bounds) {
 			IGaService gaService = Graphiti.getGaService();
 			IPeService peService = Graphiti.getPeService();
-			
+			Group businessObject = getBusinessObject(context);
+
 			int width = bounds.getWidth();
 			int height = bounds.getHeight();
 			int x = bounds.getX();
 			int y = bounds.getY();
+
+			// Ensure group will always be added to the diagram itself 
+			// not to another element like subprocess, pool / lane, ...
+			if (!(context.getTargetContainer() instanceof Diagram)) {
+				ILocation loc = Graphiti.getPeService().getLocationRelativeToDiagram(context.getTargetContainer());
+				x += loc.getX();
+				y += loc.getY();
+				((AddContext)context).setTargetContainer(this.getDiagram());
+			}
 			
 			ContainerShape newShape = peService.createContainerShape(context.getTargetContainer(), true);
-			RoundedRectangle rect = gaService.createRoundedRectangle(newShape, 5, 5);
-			rect.setFilled(false);
+			link(newShape, businessObject);
+			
+			// Create Polyline instead of rectangle so that elements within the group remain selectable
+			int xy[] = new int[] {0, 0, width, 0, width, height, 0, height, 0, 0};
+			Polyline rect = gaService.createPolyline(newShape, xy);
 			rect.setLineWidth(2);
 			rect.setForeground(manageColor(StyleUtil.CLASS_FOREGROUND));
 			rect.setLineStyle(LineStyle.DASHDOT);
 			gaService.setLocationAndSize(rect, x, y, width, height);
-			
+
+			peService.sendToFront(newShape);
 			return newShape;
 		}
 
 		@Override
 		public int getDefaultHeight() {
-			return 400;
+			return 200;
 		}
 
 		@Override
 		public int getDefaultWidth() {
-			return 400;
+			return 200;
 		}
 
 		@Override
@@ -150,6 +176,62 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 		@Override
 		public EClass getBusinessObjectClass() {
 			return Bpmn2Package.eINSTANCE.getGroup();
+		}
+	}
+
+	public static class MoveGroupFeature extends DefaultBpmn2MoveShapeFeature {
+		public MoveGroupFeature(IFeatureProvider fp) {
+			super(fp);
+		}
+		List<ContainerShape> containedShapes = new ArrayList<ContainerShape>();
+		@Override
+		public boolean canMoveShape(IMoveShapeContext context) {
+			return true;
+		}
+		@Override
+		protected void preMoveShape(IMoveShapeContext context) {
+			super.preMoveShape(context);
+			ContainerShape container = context.getTargetContainer();
+			if (!(container instanceof Diagram)) {
+				ILocation loc = Graphiti.getPeService().getLocationRelativeToDiagram(container);
+				int x = context.getX() + loc.getX();
+				int y = context.getY() + loc.getY();
+				((MoveShapeContext)context).setX(x);
+				((MoveShapeContext)context).setY(y);
+				((MoveShapeContext)context).setDeltaX(x - preMoveBounds.getX());
+				((MoveShapeContext)context).setDeltaY(y - preMoveBounds.getY());
+				((MoveShapeContext)context).setTargetContainer(getDiagram());
+			}
+			Graphiti.getPeService().sendToFront(context.getShape());
+		}
+	}	
+	
+	public class ResizeGroupFeature extends DefaultBpmn2ResizeShapeFeature {
+
+		public ResizeGroupFeature(IFeatureProvider fp) {
+			super(fp);
+		}
+
+		@Override
+		protected void internalResize(IResizeShapeContext context) {
+			Shape shape = context.getShape();
+
+			int x = context.getX();
+			int y = context.getY();
+			int w = context.getWidth();
+			int h = context.getHeight();
+			Polyline rect = (Polyline) shape.getGraphicsAlgorithm();
+			Point p;
+			p = rect.getPoints().get(1);
+			p.setX(w);
+			p = rect.getPoints().get(2);
+			p.setX(w);
+			p.setY(h);
+			p = rect.getPoints().get(3);
+			p.setY(h);
+
+			Graphiti.getGaService().setLocationAndSize(rect, x, y, w, h);
+			Graphiti.getPeService().sendToFront(shape);
 		}
 	}
 
