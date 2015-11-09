@@ -12,13 +12,20 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.activity.subprocess;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.camunda.bpm.modeler.core.features.activity.LayoutActivityFeature;
+import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
+import org.eclipse.bpmn2.Group;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.context.ILayoutContext;
 import org.eclipse.graphiti.mm.algorithms.AbstractText;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.services.IPeService;
 
 public class LayoutExpandableActivityFeature extends LayoutActivityFeature {
 
@@ -33,4 +40,22 @@ public class LayoutExpandableActivityFeature extends LayoutActivityFeature {
 
 		Graphiti.getGaService().setLocationAndSize(text, 5, 5, bounds.getWidth() - 10, bounds.getHeight() - 10);
 	}
+
+	@Override
+	protected void postLayoutShapeAndChildren(ContainerShape shape, ILayoutContext context) {
+		super.postLayoutShapeAndChildren(shape, context);
+
+		// bring all Groups, if any, back to front
+		IPeService peService = Graphiti.getPeService();
+		List<Shape> diagramChildren = // beware of concurrent modification 
+				new ArrayList<Shape>(getDiagram().getChildren());
+		for (Shape s: diagramChildren) {
+			if (s instanceof ContainerShape && 
+					BusinessObjectUtil.getFirstBaseElement(s) instanceof Group) {
+				peService.sendToFront(s); 
+			}
+		}
+	}
+	
+	
 }

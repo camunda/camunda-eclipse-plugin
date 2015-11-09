@@ -9,8 +9,10 @@ import java.util.Set;
 
 import org.camunda.bpm.modeler.core.layout.util.LayoutUtil;
 import org.camunda.bpm.modeler.core.layout.util.Layouter;
+import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
+import org.eclipse.bpmn2.Group;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.SubProcess;
@@ -22,6 +24,8 @@ import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.services.IPeService;
 
 /**
  * Default layouting implementation for all shapes (non-connections).
@@ -179,6 +183,17 @@ public class DefaultBpmn2LayoutShapeFeature extends AbstractBpmn2LayoutElementFe
 		
 		for (Connection connection : connections) {
 			layoutConnection(connection, context);
+		}
+		
+		// repairing connections is a good trigger to bring all Groups back to front
+		IPeService peService = Graphiti.getPeService();
+		List<Shape> diagramChildren = // beware of concurrent modification 
+				new ArrayList<Shape>(getDiagram().getChildren());
+		for (Shape s: diagramChildren) {
+			if (s instanceof ContainerShape && 
+					BusinessObjectUtil.getFirstBaseElement(s) instanceof Group) {
+				peService.sendToFront(s); 
+			}
 		}
 	}
 
