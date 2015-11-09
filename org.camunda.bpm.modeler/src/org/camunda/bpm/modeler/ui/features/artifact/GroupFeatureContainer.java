@@ -12,6 +12,9 @@
  ******************************************************************************/
 package org.camunda.bpm.modeler.ui.features.artifact;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.camunda.bpm.modeler.core.features.AbstractBpmn2AddShapeFeature;
 import org.camunda.bpm.modeler.core.features.DefaultBpmn2LayoutShapeFeature;
 import org.camunda.bpm.modeler.core.features.DefaultBpmn2MoveShapeFeature;
@@ -24,6 +27,7 @@ import org.camunda.bpm.modeler.ui.features.AbstractDefaultDeleteFeature;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Group;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -36,8 +40,10 @@ import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
-import org.eclipse.graphiti.features.context.ILayoutContext;
+import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
+import org.eclipse.graphiti.features.context.impl.AddContext;
+import org.eclipse.graphiti.features.context.impl.MoveShapeContext;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.styles.LineStyle;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
@@ -77,12 +83,12 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 
 	@Override
 	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
-		return new LayoutGroupFeature(fp);
+		return new DefaultBpmn2LayoutShapeFeature(fp);
 	}
 
 	@Override
 	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
-		return new DefaultBpmn2MoveShapeFeature(fp);
+		return new MoveGroupFeature(fp);
 	}
 
 	@Override
@@ -104,14 +110,25 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 		protected ContainerShape createPictogramElement(IAddContext context, IRectangle bounds) {
 			IGaService gaService = Graphiti.getGaService();
 			IPeService peService = Graphiti.getPeService();
+			Group businessObject = getBusinessObject(context);
 
 			int width = bounds.getWidth();
 			int height = bounds.getHeight();
 			int x = bounds.getX();
 			int y = bounds.getY();
 
+			// Ensure group will always be added to the diagram itself 
+			// not to another element like subprocess, pool / lane, ...
+			if (!(context.getTargetContainer() instanceof Diagram)) {
+				ILocation loc = Graphiti.getPeService().getLocationRelativeToDiagram(context.getTargetContainer());
+				x += loc.getX();
+				y += loc.getY();
+				((AddContext)context).setTargetContainer(this.getDiagram());
+			}
+			
 			ContainerShape newShape = peService.createContainerShape(context.getTargetContainer(), true);
-
+			link(newShape, businessObject);
+			
 			// Create Polyline instead of rectangle so that elements within the group remain selectable
 			int xy[] = new int[] {0, 0, width, 0, width, height, 0, height, 0, 0};
 			Polyline rect = gaService.createPolyline(newShape, xy);
@@ -120,6 +137,7 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 			rect.setLineStyle(LineStyle.DASHDOT);
 			gaService.setLocationAndSize(rect, x, y, width, height);
 
+			peService.sendToFront(newShape);
 			return newShape;
 		}
 
@@ -161,6 +179,33 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 		}
 	}
 
+	public static class MoveGroupFeature extends DefaultBpmn2MoveShapeFeature {
+		public MoveGroupFeature(IFeatureProvider fp) {
+			super(fp);
+		}
+		List<ContainerShape> containedShapes = new ArrayList<ContainerShape>();
+		@Override
+		public boolean canMoveShape(IMoveShapeContext context) {
+			return true;
+		}
+		@Override
+		protected void preMoveShape(IMoveShapeContext context) {
+			super.preMoveShape(context);
+			ContainerShape container = context.getTargetContainer();
+			if (!(container instanceof Diagram)) {
+				ILocation loc = Graphiti.getPeService().getLocationRelativeToDiagram(container);
+				int x = context.getX() + loc.getX();
+				int y = context.getY() + loc.getY();
+				((MoveShapeContext)context).setX(x);
+				((MoveShapeContext)context).setY(y);
+				((MoveShapeContext)context).setDeltaX(x - preMoveBounds.getX());
+				((MoveShapeContext)context).setDeltaY(y - preMoveBounds.getY());
+				((MoveShapeContext)context).setTargetContainer(getDiagram());
+			}
+			Graphiti.getPeService().sendToFront(context.getShape());
+		}
+	}	
+	
 	public class ResizeGroupFeature extends DefaultBpmn2ResizeShapeFeature {
 
 		public ResizeGroupFeature(IFeatureProvider fp) {
@@ -186,45 +231,10 @@ public class GroupFeatureContainer extends BaseElementFeatureContainer {
 			p.setY(h);
 
 			Graphiti.getGaService().setLocationAndSize(rect, x, y, w, h);
+			Graphiti.getPeService().sendToFront(shape);
 		}
 	}
 
-	public class LayoutGroupFeature extends DefaultBpmn2LayoutShapeFeature {
-
-		public LayoutGroupFeature(IFeatureProvider fp) {
-			super(fp);
-		}
-		
-		@Override
-		protected void postLayoutShapeAndChildren(ContainerShape shape, final ILayoutContext context) {
-			// Polyline layout is destroyed after moving a parent container (e.g. pool, ...)
-			// ==>> repair the Polyline rectangle if parent is not the diagram itself
-			if (!(shape.getContainer() instanceof Diagram)) {
-				Polyline rect = (Polyline) shape.getGraphicsAlgorithm();
-				
-				Point p;
-				p = rect.getPoints().get(2);
-				int w = p.getX();
-				int h = p.getY();
-				
-				p = rect.getPoints().get(0);
-				p.setX(0);
-				p.setY(0);
-				p = rect.getPoints().get(1);
-				p.setX(w);
-				p.setY(0);
-				p = rect.getPoints().get(3);
-				p.setX(0);
-				p.setY(h);
-				p = rect.getPoints().get(4);
-				p.setX(0);
-				p.setY(0);
-	
-				Graphiti.getGaService().setLocationAndSize(rect, rect.getX(), rect.getY(), w, h);
-			}
-		}		
-	}
-	
 	@Override
 	public IDeleteFeature getDeleteFeature(IFeatureProvider fp) {
 		return new AbstractDefaultDeleteFeature(fp);
