@@ -62,6 +62,9 @@ public class DefaultBpmn2LayoutShapeFeature extends AbstractBpmn2LayoutElementFe
 		
 		if (isRepairConnections(context)) {
 			repairConnections(context);
+			// repairing connections is a good trigger
+			// to bring all Group shapes back to front 
+			repairGroupZOrder(context);
 		}
 		
 		return true;
@@ -183,9 +186,15 @@ public class DefaultBpmn2LayoutShapeFeature extends AbstractBpmn2LayoutElementFe
 		
 		for (Connection connection : connections) {
 			layoutConnection(connection, context);
-		}
-		
-		// repairing connections is a good trigger to bring all Groups back to front
+		}		
+	}
+	
+	/**
+	 * Repairs the Z-order of all Group shapes and brings them back to front.
+	 * 
+	 * @param context the layout context
+	 */
+	protected void repairGroupZOrder(ILayoutContext context) {
 		IPeService peService = Graphiti.getPeService();
 		List<Shape> diagramChildren = // beware of concurrent modification 
 				new ArrayList<Shape>(getDiagram().getChildren());
