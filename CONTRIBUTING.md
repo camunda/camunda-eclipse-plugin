@@ -7,7 +7,7 @@
     *   [Setup modeler projects](#setup-modeler-projects)
 *   [Inspect the project structure](#project-structure)
 *   Write some code
-*   Submit a pull request. [Contribution guidelines](https://github.com/camunda/camunda.org/blob/master/COMMIT_MESSAGES.md)
+*   Submit a pull request. [Contribution guidelines](https://github.com/camunda/camunda.org/blob/kepler/COMMIT_MESSAGES.md)
 
 
 ## Setup Eclipse IDE
@@ -22,7 +22,7 @@ In this section we install specific plugins to build the camunda modeler without
 The following shows a screenshot of an Eclipse Indigo installation with the required plugins installed.
 Highlighted are plugins which need to be installed in order to resolve add dependencies.
 
-![Development Requirements](https://raw.github.com/camunda/camunda-modeler/master/documentation/images/development-requirements.png)
+![Development Requirements](https://raw.github.com/camunda/camunda-eclipse-plugin/kepler/documentation/images/development-requirements.png)
 
 To avoid any problems install the plugins in the following order:
 
@@ -87,12 +87,12 @@ To avoid any problems install the plugins in the following order:
 *   Open `Help > Install new software ...`
 *		Choose `Kepler - http://download.eclipse.org/releases/kepler`
 *   Open category `Modeling` and install:
-    *   `EMF - Eclipse Modeling Framework SDK` - 2.9.1.v20130902-0605	- org.eclipse.emf.sdk.feature.group	
+    *   `EMF - Eclipse Modeling Framework SDK` - 2.9.1.v20130902-0605	- org.eclipse.emf.sdk.feature.group
     *   `EMF Validation Framework SDK` -1.7.0.201306111341	- org.eclipse.emf.validation.sdk.feature.group
     *   `Graphiti SDK (Incubation)` - 0.10.1.v20130918-0838	- org.eclipse.graphiti.sdk.feature.feature.group
 *   Add the BPMN 2.0 Update Site: `http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130423/`
     *   install `BPMN2 Project Feature` - 0.7.0.201304230617	- org.eclipse.bpmn2.feature.feature.group
-*		Choose `Kepler - http://download.eclipse.org/releases/kepler`    
+*		Choose `Kepler - http://download.eclipse.org/releases/kepler`
 *   Open category `Web, XML, Java EE and OSGi Enterprise Development` and install
    *   `Eclipse Web Developer Tools` - 3.5.1.v201307171524-7O7QG2NEMkBS3C2az0gQwwALctEj3DZPgTEZceV4	- org.eclipse.wst.web_ui.feature.feature.group
    *   `Eclipse Java EE Developer Tools` - 3.5.1.v201308281800-7b7KIahFSK2WQtQeBOuHz-QXyUmRm	- org.eclipse.jst.enterprise_ui.feature.feature.group
@@ -105,11 +105,11 @@ To avoid any problems install the plugins in the following order:
 
 ## Setup modeler projects
 
-*   Checkout the `master` branch
+*   Checkout the `kepler` branch
 *   Make sure you have the `m2eclipse` plugin installed in your Eclipse
 *   Import sources into Eclipse via `Import -> Existing maven projects`
 *   Execute `mvn clean install` on the root project to retrieve maven dependencies of the projects
-*   Apply the camunda bpm [formatter templates](https://github.com/camunda/camunda-bpm-platform/tree/master/settings/eclipse)
+*   Apply the camunda bpm [formatter templates](https://github.com/camunda/camunda-bpm-platform/tree/kepler/settings/eclipse)
 *   If you have already installed the [required project plugins](#install-project-plugins) no error should occur.
 *   [Examine the sources](#project-structure)
 *   Run / Test
@@ -129,10 +129,10 @@ changes on master branch will be added to the kepler branch via the following gi
 
 ```
 git checkout kepler
-git pull 
+git pull
 git rebase master
 ```
 
 This effects a replay of all kepler specific changes on the top of latest master branch changes.
 
-[1]: https://github.com/camunda/camunda-modeler
+[1]: https://github.com/camunda/camunda-eclipse-plugin
