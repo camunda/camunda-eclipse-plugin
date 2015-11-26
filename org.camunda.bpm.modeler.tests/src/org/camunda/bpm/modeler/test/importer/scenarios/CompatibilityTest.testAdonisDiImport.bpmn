@@ -7,7 +7,7 @@
 	xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
 	xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
 	id="Definitions_1" 
-	targetNamespace="http://activiti.org/bpmn">
+	targetNamespace="http://camunda.org/Examples">
 	
 	<bpmn2:process id="process_2" name="Default Process">
 		<bpmn2:startEvent name="Start Event" id="_16770"

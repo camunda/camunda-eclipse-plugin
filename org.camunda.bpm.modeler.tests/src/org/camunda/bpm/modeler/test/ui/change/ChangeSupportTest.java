@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.camunda.bpm.modeler.core.utils.ExtensionUtil;
 import org.camunda.bpm.modeler.runtime.engine.model.ConstraintType;
+import org.camunda.bpm.modeler.runtime.engine.model.FailedJobRetryTimeCycleType;
 import org.camunda.bpm.modeler.runtime.engine.model.FieldType;
 import org.camunda.bpm.modeler.runtime.engine.model.FormDataType;
 import org.camunda.bpm.modeler.runtime.engine.model.FormFieldType;
@@ -18,9 +19,6 @@ import org.camunda.bpm.modeler.runtime.engine.model.PropertiesType;
 import org.camunda.bpm.modeler.runtime.engine.model.PropertyType;
 import org.camunda.bpm.modeler.runtime.engine.model.ValidationType;
 import org.camunda.bpm.modeler.runtime.engine.model.ValueType;
-import org.camunda.bpm.modeler.runtime.engine.model.fox.FailedJobRetryTimeCycleType;
-import org.camunda.bpm.modeler.runtime.engine.model.fox.FoxFactory;
-import org.camunda.bpm.modeler.runtime.engine.model.fox.FoxPackage;
 import org.camunda.bpm.modeler.runtime.engine.model.util.ModelResourceFactoryImpl;
 import org.camunda.bpm.modeler.runtime.engine.util.AttributeUtil;
 import org.camunda.bpm.modeler.test.feature.AbstractNonTransactionalFeatureTest;
@@ -55,9 +53,6 @@ import org.junit.Test;
  */
 public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 
-	static final FoxFactory foxFactory = FoxFactory.eINSTANCE;
-	static final FoxPackage foxPackage = FoxPackage.eINSTANCE;
-	
 	static final Bpmn2Factory bpmn2factory = Bpmn2Factory.eINSTANCE;
 	static final Bpmn2Package bpmn2package = Bpmn2Package.eINSTANCE;
 	
@@ -299,7 +294,7 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 		CustomResourceSetListener listener = new CustomResourceSetListener(serviceTask1, filter);
 		listener.register();
 		
-		final FailedJobRetryTimeCycleType retryCycle = foxFactory.createFailedJobRetryTimeCycleType();
+		final FailedJobRetryTimeCycleType retryCycle = modelFactory.createFailedJobRetryTimeCycleType();
 		retryCycle.setText("R3/PT10S");
 		
 		transactionalExecute(new RecordingCommand(editingDomain) {
@@ -377,7 +372,7 @@ public class ChangeSupportTest extends AbstractNonTransactionalFeatureTest {
 		
 		listener.register();
 
-		final FailedJobRetryTimeCycleType retryCycle = foxFactory.createFailedJobRetryTimeCycleType();
+		final FailedJobRetryTimeCycleType retryCycle = modelFactory.createFailedJobRetryTimeCycleType();
 		retryCycle.setText("R3/PT10S");
 
 		// assert that feature is set

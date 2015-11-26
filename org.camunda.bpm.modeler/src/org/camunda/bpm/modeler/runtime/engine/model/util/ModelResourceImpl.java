@@ -28,12 +28,9 @@ import org.camunda.bpm.modeler.core.Activator;
 import org.camunda.bpm.modeler.core.model.Bpmn2ModelerResourceImpl;
 import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
 import org.camunda.bpm.modeler.runtime.engine.model.EntryType;
-import org.camunda.bpm.modeler.runtime.engine.model.MapType;
+import org.camunda.bpm.modeler.runtime.engine.model.FailedJobRetryTimeCycleType;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.runtime.engine.model.ParameterType;
-import org.camunda.bpm.modeler.runtime.engine.model.ScriptType;
-import org.camunda.bpm.modeler.runtime.engine.model.fox.FailedJobRetryTimeCycleType;
-import org.camunda.bpm.modeler.runtime.engine.model.fox.FoxPackage;
 import org.camunda.bpm.modeler.runtime.engine.util.DiagramExport;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.Bpmn2Package;
@@ -52,7 +49,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.util.FeatureMap;
@@ -122,8 +118,7 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 					
 			@Override
 			protected void saveTypeAttribute(EClass eClass) {
-				if (!eClass.getEPackage().getNsPrefix().equals("activiti")
-						&& !eClass.getEPackage().getNsPrefix().equals("camunda") &&
+				if (!eClass.getEPackage().getNsPrefix().equals("camunda") &&
 
 						// prevent that 'xsi:type="xsd:anyType"' will be added to
 						// an element which type is "AnyTypeImpl"
@@ -300,7 +295,7 @@ public class ModelResourceImpl extends Bpmn2ModelerResourceImpl {
 				}
 				if (o instanceof FailedJobRetryTimeCycleType
 						&& f.getName().equals(
-								FoxPackage.eINSTANCE.getFailedJobRetryTimeCycleType_Text()
+								ModelPackage.eINSTANCE.getFailedJobRetryTimeCycleType_Text()
 										.getName())) {
 					return false;
 				}
