@@ -1,6 +1,6 @@
 /**
  */
-package org.camunda.bpm.modeler.runtime.engine.model.fox;
+package org.camunda.bpm.modeler.runtime.engine.model;
 
 import org.eclipse.emf.ecore.EObject;
 
@@ -14,57 +14,57 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.fox.FailedJobRetryTimeCycleType#getMixed <em>Mixed</em>}</li>
- *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.fox.FailedJobRetryTimeCycleType#getText <em>Text</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.FailedJobRetryTimeCycleType#getMixed <em>Mixed</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.FailedJobRetryTimeCycleType#getText <em>Text</em>}</li>
  * </ul>
  * </p>
  *
- * @see org.camunda.bpm.modeler.runtime.engine.model.fox.FoxPackage#getFailedJobRetryTimeCycleType()
+ * @see org.camunda.bpm.modeler.runtime.engine.model.ModelPackage#getFailedJobRetryTimeCycleType()
  * @model extendedMetaData="name='tFailedJobRetryCycleType' kind='mixed'"
  * @generated
  */
 public interface FailedJobRetryTimeCycleType extends EObject {
-  /**
+	/**
 	 * Returns the value of the '<em><b>Mixed</b></em>' attribute list.
 	 * The list contents are of type {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}.
 	 * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Mixed</em>' attribute list isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Mixed</em>' attribute list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Mixed</em>' attribute list.
-	 * @see org.camunda.bpm.modeler.runtime.engine.model.fox.FoxPackage#getFailedJobRetryTimeCycleType_Mixed()
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ModelPackage#getFailedJobRetryTimeCycleType_Mixed()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.EFeatureMapEntry" many="true"
 	 *        extendedMetaData="kind='elementWildcard' name=':mixed'"
 	 * @generated
 	 */
-  FeatureMap getMixed();
+	FeatureMap getMixed();
 
-  /**
+	/**
 	 * Returns the value of the '<em><b>Text</b></em>' attribute.
 	 * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Text</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Text</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Text</em>' attribute.
 	 * @see #setText(String)
-	 * @see org.camunda.bpm.modeler.runtime.engine.model.fox.FoxPackage#getFailedJobRetryTimeCycleType_Text()
+	 * @see org.camunda.bpm.modeler.runtime.engine.model.ModelPackage#getFailedJobRetryTimeCycleType_Text()
 	 * @model required="true" volatile="true" derived="true" ordered="false"
 	 * @generated
 	 */
-  String getText();
+	String getText();
 
-  /**
-	 * Sets the value of the '{@link org.camunda.bpm.modeler.runtime.engine.model.fox.FailedJobRetryTimeCycleType#getText <em>Text</em>}' attribute.
+	/**
+	 * Sets the value of the '{@link org.camunda.bpm.modeler.runtime.engine.model.FailedJobRetryTimeCycleType#getText <em>Text</em>}' attribute.
 	 * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
+	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Text</em>' attribute.
 	 * @see #getText()
 	 * @generated
 	 */
-  void setText(String value);
+	void setText(String value);
 
 } // FailedJobRetryTimeCycleType

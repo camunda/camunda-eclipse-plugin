@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://activiti.org/bpmn" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fox="http://www.camunda.com/fox" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="_-sqjcER2EeK_SrMU0nntKQ" targetNamespace="http://activiti.org/bpmn">
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="_-sqjcER2EeK_SrMU0nntKQ" targetNamespace="http://camunda.org/Examples">
   <bpmn2:collaboration id="_Collaboration_3">
     <bpmn2:participant id="_Participant_3" name="Pool " processRef="Process_1"/>
   </bpmn2:collaboration>
@@ -7,7 +7,7 @@
     <bpmn2:serviceTask id="ServiceTask_1" name="Service Task 1"/>
     <bpmn2:task id="Task_1" camunda:async="true" name="Task 1">
       <bpmn2:extensionElements>
-        <fox:failedJobRetryTimeCycle xsi:type="xsd:anyType">R3/PT10S</fox:failedJobRetryTimeCycle>
+        <camunda:failedJobRetryTimeCycle>R3/PT10S</camunda:failedJobRetryTimeCycle>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_5</bpmn2:incoming>
     </bpmn2:task>

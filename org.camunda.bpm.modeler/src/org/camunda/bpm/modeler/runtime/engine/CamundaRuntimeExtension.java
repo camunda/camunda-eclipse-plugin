@@ -15,6 +15,6 @@ package org.camunda.bpm.modeler.runtime.engine;
 import org.camunda.bpm.modeler.core.IBpmn2RuntimeExtension;
 
 @SuppressWarnings("restriction")
-public class ActivitiRuntimeExtension implements IBpmn2RuntimeExtension {
+public class CamundaRuntimeExtension implements IBpmn2RuntimeExtension {
 
 }

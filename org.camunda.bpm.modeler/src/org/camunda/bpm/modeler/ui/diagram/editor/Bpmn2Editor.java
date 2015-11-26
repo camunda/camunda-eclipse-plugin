@@ -37,6 +37,8 @@ import org.camunda.bpm.modeler.ui.views.outline.Bpmn2EditorOutlinePage;
 import org.camunda.bpm.modeler.ui.views.outline.FlowElementTreeEditPart;
 import org.camunda.bpm.modeler.ui.wizards.Bpmn2DiagramCreator;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.bpmn2.util.Bpmn2ResourceImpl;
 import org.eclipse.core.resources.IFile;
@@ -49,7 +51,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.emf.common.command.AbstractCommand;
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
@@ -282,6 +286,13 @@ public class Bpmn2Editor extends DiagramEditor implements IPropertyChangeListene
 
 		// set input
 		super.setInput(diagramEditorInput);
+
+		if (bpmnLoaded &&
+				bpmnResource instanceof Bpmn2ModelerResourceImpl &&
+				((Bpmn2ModelerResourceImpl) bpmnResource).hasNamespaceChanged()) {
+			bpmnResource.setModified(true);
+			doSave(new NullProgressMonitor());
+		}
 
 		setActiveEditor(this);
 	}

@@ -52,7 +52,7 @@ public class Bpmn2PersistencyBehavior extends DefaultPersistencyBehavior {
 	protected Map<Resource, Map<?, ?>> createSaveOptions() {
 		// Save only resources that have actually changed.
 		final Map<Object, Object> saveOption = new HashMap<Object, Object>();
-
+		
 		saveOption.put(Resource.OPTION_SAVE_ONLY_IF_CHANGED, Resource.OPTION_SAVE_ONLY_IF_CHANGED_MEMORY_BUFFER);
 
 		// Use CDATA to escape characters like '<' etc.

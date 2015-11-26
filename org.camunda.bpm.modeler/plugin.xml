@@ -7,20 +7,20 @@
 	<extension point="org.eclipse.emf.ecore.generated_package">
 		<package
 			class="org.camunda.bpm.modeler.runtime.engine.model.ModelPackage"
-			genModel="model/activitiExtensions.genmodel"
-			uri="http://www.activiti.org">
+			genModel="model/camundaExtensions.genmodel"
+			uri="http://camunda.org">
 		</package>
 	</extension>
 
 	<extension point="org.camunda.bpm.modeler.runtime">
-		<runtime name="camunda fox activiti" versions="5.4,5.5,5.6,5.7,5.8"
-			id="org.activiti.runtime.engine"
-			class="org.camunda.bpm.modeler.runtime.engine.ActivitiRuntimeExtension"
-			description="camunda modeler customizations for the activiti runtime">
+		<runtime name="Camunda Runtime Extension" versions="7.4"
+			id="org.camunda.runtime.engine"
+			class="org.camunda.bpm.modeler.runtime.engine.CamundaRuntimeExtension"
+			description="camunda modeler customizations for the runtime">
 		</runtime>
 
-		<model runtimeId="org.activiti.runtime.engine"
-			uri="http://www.activiti.org"
+		<model runtimeId="org.camunda.runtime.engine"
+			uri="http://camunda.org"
 			resourceFactory="org.camunda.bpm.modeler.runtime.engine.model.util.ModelResourceFactoryImpl">
 		</model>
 	</extension>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:fox="http://www.camunda.com/fox" xmlns:camunda="http://activiti.org/bpmn" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="_-sqjcER2EeK_SrMU0nntKQ">
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="_-sqjcER2EeK_SrMU0nntKQ">
   <bpmn2:process id="Process_1">
     <bpmn2:serviceTask id="ServiceTask_1" name="Service Task 1">
       <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
@@ -10,7 +10,7 @@
     </bpmn2:callActivity>
     <bpmn2:task id="Task_1" camunda:async="true" name="Task 1">
       <bpmn2:extensionElements>
-        <fox:failedJobRetryTimeCycle>R3/PT10S</fox:failedJobRetryTimeCycle>
+        <camunda:failedJobRetryTimeCycle>R3/PT10S</camunda:failedJobRetryTimeCycle>
       </bpmn2:extensionElements>
       <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
     </bpmn2:task>
