@@ -1,13 +1,14 @@
 package org.camunda.bpm.modeler.ui.property.tabs.builder;
 
-import static org.camunda.bpm.modeler.core.utils.ExtensionUtil.getExtension;
-import static org.camunda.bpm.modeler.core.utils.ExtensionUtil.removeExtensionByFeature;
+import static org.camunda.bpm.modeler.core.utils.ExtensionUtil.*;
 import static org.camunda.bpm.modeler.core.utils.ExtensionUtil.updateExtension;
 
+import java.util.List;
+
 import org.camunda.bpm.modeler.core.utils.ExtensionUtil;
+import org.camunda.bpm.modeler.runtime.engine.model.FailedJobRetryTimeCycleType;
+import org.camunda.bpm.modeler.runtime.engine.model.ModelFactory;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
-import org.camunda.bpm.modeler.runtime.engine.model.fox.FailedJobRetryTimeCycleType;
-import org.camunda.bpm.modeler.runtime.engine.model.fox.FoxFactory;
 import org.camunda.bpm.modeler.ui.change.filter.ExtensionChangeFilter;
 import org.camunda.bpm.modeler.ui.change.filter.FeatureChangeFilter;
 import org.camunda.bpm.modeler.ui.property.tabs.binding.ModelTextBinding;
@@ -87,7 +88,12 @@ public class RetryEnabledPropertiesBuilder extends AbstractPropertiesBuilder<Bas
 
 		@Override
 		public String getModelValue() {
-			return (String) getExtension(bo, RETRY_CYCLE_FEATURE, "text");
+			List<FailedJobRetryTimeCycleType> result =
+					(List<FailedJobRetryTimeCycleType>) getExtensions(bo, FailedJobRetryTimeCycleType.class);
+			if (!result.isEmpty()) {
+				return result.get(0).getText();
+			}
+			return null;
 		}
 
 		@Override
@@ -118,7 +124,7 @@ public class RetryEnabledPropertiesBuilder extends AbstractPropertiesBuilder<Bas
 	// transactional behavior //////////////////////////////
 	
 	protected void updateRetryCycle(String retryTimeCycle) {
-		FailedJobRetryTimeCycleType retryCycle = FoxFactory.eINSTANCE.createFailedJobRetryTimeCycleType();
+		FailedJobRetryTimeCycleType retryCycle = ModelFactory.eINSTANCE.createFailedJobRetryTimeCycleType();
 		retryCycle.setText(retryTimeCycle.trim());
 	
 		updateExtension(bo, RETRY_CYCLE_FEATURE, retryCycle);

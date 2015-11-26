@@ -37,6 +37,8 @@ import org.camunda.bpm.modeler.core.Activator;
 import org.camunda.bpm.modeler.core.preferences.Bpmn2Preferences;
 import org.camunda.bpm.modeler.core.runtime.TargetRuntime;
 import org.camunda.bpm.modeler.core.utils.ModelUtil;
+import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
+import org.camunda.bpm.modeler.ui.dialog.namespace.DeprecatedNamespaceDialog;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Import;
@@ -76,6 +78,8 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.XMLSave;
 import org.eclipse.emf.ecore.xmi.impl.XMLLoadImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMLSaveImpl;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.swt.widgets.Display;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -155,6 +159,10 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 				ModelUtil.setID(obj);
 			}
 		}
+	}
+	
+	public boolean hasNamespaceChanged() {
+		return ((Bpmn2ModelerXmlHelper) xmlHelper).hasNamespaceChanged();
 	}
 
 	/**
@@ -618,7 +626,16 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 		}
 	}
 	
-	public class Bpmn2ModelerXmlHelper extends BpmnXmlHelper {
+	public static class Bpmn2ModelerXmlHelper extends BpmnXmlHelper {
+		
+		protected static List<String> DEPRECATED_NAMESPACES = new ArrayList<String>();
+		static {
+			DEPRECATED_NAMESPACES.add("http://activiti.org/bpmn");
+			DEPRECATED_NAMESPACES.add("http://www.camunda.com/fox");			
+		}
+		
+		protected boolean alreadyOpenedDialog = false;
+		protected int dialogResult = IDialogConstants.CANCEL_ID;
 		
 		public Bpmn2ModelerXmlHelper(Bpmn2ResourceImpl resource) {
 			super(resource);
@@ -640,5 +657,26 @@ public class Bpmn2ModelerResourceImpl extends Bpmn2ResourceImpl {
 			}
 			return super.getFeature(eClass, namespaceURI, name, isElement);
 		}
+    	
+    	@Override
+    	public void addPrefix(String prefix, String uri) {
+    		if (DEPRECATED_NAMESPACES.contains(uri)) {
+    			
+    			if (!alreadyOpenedDialog) {
+    				dialogResult = new DeprecatedNamespaceDialog(Display.getCurrent().getActiveShell()).open();
+    				alreadyOpenedDialog = true;
+    			}
+				if (IDialogConstants.OK_ID == dialogResult) {
+					super.addPrefix(prefix, ModelPackage.eNS_URI);
+					return;
+				}
+    			
+    		}
+    		super.addPrefix(prefix, uri);
+    	}
+    	
+    	public boolean hasNamespaceChanged() {
+    		return dialogResult == IDialogConstants.OK_ID;
+    	}
 	}
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="def_activiti-pool" exporter="Oryx converter by camunda.com" exporterVersion="1.0" targetNamespace="http://activiti.org/bpmn">
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="def_activiti-pool" exporter="Oryx converter by camunda.com" exporterVersion="1.0" targetNamespace="http://camunda.org/Examples">
   <collaboration id="c8019143-92df-a7d-1adf-7baa8186e041">
     <participant id="p_oryx_B40E0555-DC5B-4103-A97D-1A472EEDF145" name="Human Agent" processRef="oryx_B40E0555-DC5B-4103-A97D-1A472EEDF145"/>
     <participant id="p_oryx_ABC6B959-22B2-40E1-855F-F36395F25B45" name="Process activiti" processRef="oryx_ABC6B959-22B2-40E1-855F-F36395F25B45"/>

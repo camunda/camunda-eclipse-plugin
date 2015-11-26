@@ -35,7 +35,10 @@ import org.junit.Ignore;
 public class TestHelper {
 
 	public static ModelResources createModel(String bpmnDiagramUrl) {
-			
+		return createModel(bpmnDiagramUrl, new ModelResourceFactoryImpl());
+	}
+
+	public static ModelResources createModel(String bpmnDiagramUrl, ModelResourceFactoryImpl factory) {
 		URL resourceUrl = Activator.getBundleContext().getBundle().getResource(bpmnDiagramUrl);
 		if (resourceUrl == null) {
 			throw new AssertionFailedError("Resource " + bpmnDiagramUrl + " not found");
@@ -43,7 +46,7 @@ public class TestHelper {
 
 		URI testResourceUri = URI.createFileURI("target/" + bpmnDiagramUrl);
 		
-		Bpmn2Resource resource = createBpmn2Resource(testResourceUri);
+		Bpmn2Resource resource = createBpmn2Resource(factory, testResourceUri);
 		populateResource(resource, resourceUrl);
 		
 		TransactionalEditingDomain editingDomain = createEditingDomain(resource);
@@ -116,8 +119,8 @@ public class TestHelper {
 	 * @param uri
 	 * @return
 	 */
-	private static Bpmn2Resource createBpmn2Resource(URI uri) {
-		return (Bpmn2Resource) new ModelResourceFactoryImpl().createResource(uri);
+	private static Bpmn2Resource createBpmn2Resource(ModelResourceFactoryImpl factory, URI uri) {
+		return (Bpmn2Resource) factory.createResource(uri);
 	}
 
 	/**

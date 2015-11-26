@@ -6,13 +6,11 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import java.util.List;
 
 import org.camunda.bpm.modeler.core.utils.ExtensionUtil;
+import org.camunda.bpm.modeler.runtime.engine.model.FailedJobRetryTimeCycleType;
 import org.camunda.bpm.modeler.runtime.engine.model.InType;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelFactory;
 import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.camunda.bpm.modeler.runtime.engine.model.OutType;
-import org.camunda.bpm.modeler.runtime.engine.model.fox.FailedJobRetryTimeCycleType;
-import org.camunda.bpm.modeler.runtime.engine.model.fox.FoxFactory;
-import org.camunda.bpm.modeler.runtime.engine.model.fox.FoxPackage;
 import org.camunda.bpm.modeler.runtime.engine.model.util.ModelResourceFactoryImpl;
 import org.camunda.bpm.modeler.test.feature.AbstractNonTransactionalFeatureTest;
 import org.camunda.bpm.modeler.test.util.DiagramResource;
@@ -35,9 +33,6 @@ import org.junit.Test;
  */
 public class ExtensionUtilTest extends AbstractNonTransactionalFeatureTest {
 
-	static final FoxFactory foxFactory = FoxFactory.eINSTANCE;
-	static final FoxPackage foxPackage = FoxPackage.eINSTANCE;
-	
 	static final ModelFactory modelFactory = ModelFactory.eINSTANCE;
 	static final ModelPackage modelPackage = ModelPackage.eINSTANCE;
 	
@@ -86,7 +81,7 @@ public class ExtensionUtilTest extends AbstractNonTransactionalFeatureTest {
 	public void testAddExtension() {
 		final ServiceTask serviceTask1 = findBusinessObjectById(diagram, "ServiceTask_1", ServiceTask.class);
 		
-		final FailedJobRetryTimeCycleType retryCycle = foxFactory.createFailedJobRetryTimeCycleType();
+		final FailedJobRetryTimeCycleType retryCycle = modelFactory.createFailedJobRetryTimeCycleType();
 		retryCycle.setText("R3/PT10S");
 
 		transactionalExecute(new RecordingCommand(editingDomain) {
@@ -111,7 +106,7 @@ public class ExtensionUtilTest extends AbstractNonTransactionalFeatureTest {
     
     assertThat(valueBefore).isEqualTo("R3/PT10S");
 		
-		final FailedJobRetryTimeCycleType retryCycle = foxFactory.createFailedJobRetryTimeCycleType();
+		final FailedJobRetryTimeCycleType retryCycle = modelFactory.createFailedJobRetryTimeCycleType();
 		retryCycle.setText("R3/PT200000S");
 		
 		transactionalExecute(new RecordingCommand(editingDomain) {

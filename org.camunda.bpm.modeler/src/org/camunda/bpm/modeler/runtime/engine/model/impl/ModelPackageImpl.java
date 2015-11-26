@@ -12,6 +12,7 @@ import org.camunda.bpm.modeler.runtime.engine.model.EventType;
 import org.camunda.bpm.modeler.runtime.engine.model.EventType1;
 import org.camunda.bpm.modeler.runtime.engine.model.ExecutionListenerType;
 import org.camunda.bpm.modeler.runtime.engine.model.Expression;
+import org.camunda.bpm.modeler.runtime.engine.model.FailedJobRetryTimeCycleType;
 import org.camunda.bpm.modeler.runtime.engine.model.FieldType;
 import org.camunda.bpm.modeler.runtime.engine.model.FormDataContainer;
 import org.camunda.bpm.modeler.runtime.engine.model.FormDataType;
@@ -35,10 +36,6 @@ import org.camunda.bpm.modeler.runtime.engine.model.TypeType;
 import org.camunda.bpm.modeler.runtime.engine.model.UserTask;
 import org.camunda.bpm.modeler.runtime.engine.model.ValidationType;
 import org.camunda.bpm.modeler.runtime.engine.model.ValueType;
-
-import org.camunda.bpm.modeler.runtime.engine.model.fox.FoxPackage;
-
-import org.camunda.bpm.modeler.runtime.engine.model.fox.impl.FoxPackageImpl;
 
 import org.camunda.bpm.modeler.runtime.engine.model.util.ModelValidator;
 
@@ -263,6 +260,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	private EClass failedJobRetryTimeCycleTypeEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	private EEnum eventTypeEEnum = null;
 
 	/**
@@ -388,16 +392,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		DcPackage.eINSTANCE.eClass();
 		XMLTypePackage.eINSTANCE.eClass();
 
-		// Obtain or create and register interdependencies
-		FoxPackageImpl theFoxPackage = (FoxPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(FoxPackage.eNS_URI) instanceof FoxPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(FoxPackage.eNS_URI) : FoxPackage.eINSTANCE);
-
 		// Create package meta-data objects
 		theModelPackage.createPackageContents();
-		theFoxPackage.createPackageContents();
 
 		// Initialize created meta-data
 		theModelPackage.initializePackageContents();
-		theFoxPackage.initializePackageContents();
 
 		// Register package validator
 		EValidator.Registry.INSTANCE.put
@@ -1763,6 +1762,33 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getFailedJobRetryTimeCycleType() {
+		return failedJobRetryTimeCycleTypeEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getFailedJobRetryTimeCycleType_Mixed() {
+		return (EAttribute)failedJobRetryTimeCycleTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getFailedJobRetryTimeCycleType_Text() {
+		return (EAttribute)failedJobRetryTimeCycleTypeEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EEnum getEventType() {
 		return eventTypeEEnum;
 	}
@@ -2061,6 +2087,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		createEReference(listTypeEClass, LIST_TYPE__LISTS);
 		createEAttribute(listTypeEClass, LIST_TYPE__VALUES);
 
+		failedJobRetryTimeCycleTypeEClass = createEClass(FAILED_JOB_RETRY_TIME_CYCLE_TYPE);
+		createEAttribute(failedJobRetryTimeCycleTypeEClass, FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED);
+		createEAttribute(failedJobRetryTimeCycleTypeEClass, FAILED_JOB_RETRY_TIME_CYCLE_TYPE__TEXT);
+
 		// Create enums
 		eventTypeEEnum = createEEnum(EVENT_TYPE);
 		eventType1EEnum = createEEnum(EVENT_TYPE1);
@@ -2101,12 +2131,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		setNsURI(eNS_URI);
 
 		// Obtain other dependent packages
-		FoxPackage theFoxPackage = (FoxPackage)EPackage.Registry.INSTANCE.getEPackage(FoxPackage.eNS_URI);
 		Bpmn2Package theBpmn2Package = (Bpmn2Package)EPackage.Registry.INSTANCE.getEPackage(Bpmn2Package.eNS_URI);
 		XMLTypePackage theXMLTypePackage = (XMLTypePackage)EPackage.Registry.INSTANCE.getEPackage(XMLTypePackage.eNS_URI);
-
-		// Add subpackages
-		getESubpackages().add(theFoxPackage);
 
 		// Create type parameters
 
@@ -2148,7 +2174,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		initEAttribute(getDocumentRoot_ActExpression(), ecorePackage.getEString(), "actExpression", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getDocumentRoot_Priority(), ecorePackage.getEString(), "priority", "", 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getDocumentRoot_ResultVariableName(), ecorePackage.getEString(), "resultVariableName", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDocumentRoot_FailedJobRetryTimeCycle(), theFoxPackage.getFailedJobRetryTimeCycleType(), null, "failedJobRetryTimeCycle", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEReference(getDocumentRoot_FailedJobRetryTimeCycle(), this.getFailedJobRetryTimeCycleType(), null, "failedJobRetryTimeCycle", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_FormData(), this.getFormDataType(), null, "formData", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getDocumentRoot_FollowUpDate(), this.getTExpression(), "followUpDate", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_Properties(), this.getPropertiesType(), null, "properties", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2299,11 +2325,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		initEReference(getListType_Lists(), this.getListType(), null, "lists", null, 0, -1, ListType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEAttribute(getListType_Values(), ecorePackage.getEString(), "values", null, 0, -1, ListType.class, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 
+		initEClass(failedJobRetryTimeCycleTypeEClass, FailedJobRetryTimeCycleType.class, "FailedJobRetryTimeCycleType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getFailedJobRetryTimeCycleType_Mixed(), ecorePackage.getEFeatureMapEntry(), "mixed", null, 0, -1, FailedJobRetryTimeCycleType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getFailedJobRetryTimeCycleType_Text(), ecorePackage.getEString(), "text", null, 1, 1, FailedJobRetryTimeCycleType.class, !IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
+
 		// Initialize enums and add enum literals
 		initEEnum(eventTypeEEnum, EventType.class, "EventType");
 		addEEnumLiteral(eventTypeEEnum, EventType.CREATE);
 		addEEnumLiteral(eventTypeEEnum, EventType.ASSIGNMENT);
 		addEEnumLiteral(eventTypeEEnum, EventType.COMPLETE);
+		addEEnumLiteral(eventTypeEEnum, EventType.DELETE);
 
 		initEEnum(eventType1EEnum, EventType1.class, "EventType1");
 		addEEnumLiteral(eventType1EEnum, EventType1.START);
@@ -2550,7 +2581,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		   new String[] {
 			 "kind", "element",
 			 "name", "failedJobRetryTimeCycle",
-			 "namespace", "http://www.camunda.com/fox"
+			 "namespace", "##targetNamespace"
 		   });		
 		addAnnotation
 		  (getDocumentRoot_FormData(), 
@@ -3469,6 +3500,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 			 "name", "value",
 			 "namespace", "##targetNamespace",
 			 "group", "#value:group"
+		   });		
+		addAnnotation
+		  (failedJobRetryTimeCycleTypeEClass, 
+		   source, 
+		   new String[] {
+			 "name", "tFailedJobRetryCycleType",
+			 "kind", "mixed"
+		   });		
+		addAnnotation
+		  (getFailedJobRetryTimeCycleType_Mixed(), 
+		   source, 
+		   new String[] {
+			 "kind", "elementWildcard",
+			 "name", ":mixed"
 		   });
 	}
 

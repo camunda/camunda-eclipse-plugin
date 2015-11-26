@@ -1,13 +1,9 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
-package org.camunda.bpm.modeler.runtime.engine.model.fox.impl;
+package org.camunda.bpm.modeler.runtime.engine.model.impl;
 
-import org.camunda.bpm.modeler.runtime.engine.model.fox.FailedJobRetryTimeCycleType;
-import org.camunda.bpm.modeler.runtime.engine.model.fox.FoxPackage;
+import org.camunda.bpm.modeler.runtime.engine.model.FailedJobRetryTimeCycleType;
+import org.camunda.bpm.modeler.runtime.engine.model.ModelPackage;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -24,14 +20,15 @@ import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.fox.impl.FailedJobRetryTimeCycleTypeImpl#getMixed <em>Mixed</em>}</li>
- *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.fox.impl.FailedJobRetryTimeCycleTypeImpl#getText <em>Text</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.FailedJobRetryTimeCycleTypeImpl#getMixed <em>Mixed</em>}</li>
+ *   <li>{@link org.camunda.bpm.modeler.runtime.engine.model.impl.FailedJobRetryTimeCycleTypeImpl#getText <em>Text</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
 public class FailedJobRetryTimeCycleTypeImpl extends EObjectImpl implements FailedJobRetryTimeCycleType {
+	
 	/**
 	 * The cached value of the '{@link #getMixed() <em>Mixed</em>}' attribute list.
 	 * <!-- begin-user-doc -->
@@ -68,7 +65,7 @@ public class FailedJobRetryTimeCycleTypeImpl extends EObjectImpl implements Fail
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return FoxPackage.Literals.FAILED_JOB_RETRY_TIME_CYCLE_TYPE;
+		return ModelPackage.Literals.FAILED_JOB_RETRY_TIME_CYCLE_TYPE;
 	}
 
 	/**
@@ -78,7 +75,7 @@ public class FailedJobRetryTimeCycleTypeImpl extends EObjectImpl implements Fail
 	 */
 	public FeatureMap getMixed() {
 		if (mixed == null) {
-			mixed = new BasicFeatureMap(this, FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED);
+			mixed = new BasicFeatureMap(this, ModelPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED);
 		}
 		return mixed;
 	}
@@ -90,22 +87,22 @@ public class FailedJobRetryTimeCycleTypeImpl extends EObjectImpl implements Fail
 	 */
 	public String getText() {
 		if (mixed != null) {
-            StringBuilder result = new StringBuilder();
-            for (FeatureMap.Entry cur : mixed) {
-                switch (cur.getEStructuralFeature().getFeatureID()) {
-                case XMLTypePackage.XML_TYPE_DOCUMENT_ROOT__CDATA:
-                case XMLTypePackage.XML_TYPE_DOCUMENT_ROOT__TEXT:
-                    result.append(cur.getValue());
-                    break;
+           StringBuilder result = new StringBuilder();
+           for (FeatureMap.Entry cur : mixed) {
+               switch (cur.getEStructuralFeature().getFeatureID()) {
+               case XMLTypePackage.XML_TYPE_DOCUMENT_ROOT__CDATA:
+               case XMLTypePackage.XML_TYPE_DOCUMENT_ROOT__TEXT:
+                   result.append(cur.getValue());
+                   break;
 
-                default:
-                    break;
-                }
-            }
-            return result.toString();
-        }
+               default:
+                   break;
+               }
+           }
+           return result.toString();
+       }
 
-        return null;
+       return null;
 	}
 
 	/**
@@ -115,7 +112,7 @@ public class FailedJobRetryTimeCycleTypeImpl extends EObjectImpl implements Fail
 	 */
 	public void setText(String newText) {
 		getMixed().clear();
-        getMixed().add(XMLTypePackage.eINSTANCE.getXMLTypeDocumentRoot_Text(), newText);
+		getMixed().add(XMLTypePackage.eINSTANCE.getXMLTypeDocumentRoot_Text(), newText);
 	}
 
 	/**
@@ -126,7 +123,7 @@ public class FailedJobRetryTimeCycleTypeImpl extends EObjectImpl implements Fail
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED:
+			case ModelPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED:
 				return ((InternalEList<?>)getMixed()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -140,10 +137,10 @@ public class FailedJobRetryTimeCycleTypeImpl extends EObjectImpl implements Fail
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED:
+			case ModelPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED:
 				if (coreType) return getMixed();
 				return ((FeatureMap.Internal)getMixed()).getWrapper();
-			case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__TEXT:
+			case ModelPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__TEXT:
 				return getText();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -157,10 +154,10 @@ public class FailedJobRetryTimeCycleTypeImpl extends EObjectImpl implements Fail
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED:
+			case ModelPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED:
 				((FeatureMap.Internal)getMixed()).set(newValue);
 				return;
-			case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__TEXT:
+			case ModelPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__TEXT:
 				setText((String)newValue);
 				return;
 		}
@@ -175,10 +172,10 @@ public class FailedJobRetryTimeCycleTypeImpl extends EObjectImpl implements Fail
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED:
+			case ModelPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED:
 				getMixed().clear();
 				return;
-			case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__TEXT:
+			case ModelPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__TEXT:
 				setText(TEXT_EDEFAULT);
 				return;
 		}
@@ -193,9 +190,9 @@ public class FailedJobRetryTimeCycleTypeImpl extends EObjectImpl implements Fail
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED:
+			case ModelPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__MIXED:
 				return mixed != null && !mixed.isEmpty();
-			case FoxPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__TEXT:
+			case ModelPackage.FAILED_JOB_RETRY_TIME_CYCLE_TYPE__TEXT:
 				return TEXT_EDEFAULT == null ? getText() != null : !TEXT_EDEFAULT.equals(getText());
 		}
 		return super.eIsSet(featureID);
