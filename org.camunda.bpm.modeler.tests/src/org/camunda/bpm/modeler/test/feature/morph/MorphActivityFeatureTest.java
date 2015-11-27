@@ -199,10 +199,10 @@ public class MorphActivityFeatureTest extends AbstractFeatureTest {
 		MessageFlow outgoingMsg = (MessageFlow) Util.findBusinessObjectById(diagram, "MessageFlow_2");
 		
 		assertThat(incomingMsg)
-			.isNull();
+			.isNotNull();
 
 		assertThat(outgoingMsg)
-			.isNull();
+			.isNotNull();
 		
 		// check the asynchronous attribute
 		assertThat(callActivity.eGet(ModelPackage.eINSTANCE.getDocumentRoot_Async()))

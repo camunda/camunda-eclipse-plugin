@@ -126,16 +126,7 @@ public class TransformerTest {
 		// then
 		List<CopyProblem> warnings = transformer.getRecordedWarnings();
 		
-		assertThat(warnings).hasSize(2);
-		assertThat(warnings.get(0)).isInstanceOf(IgnoredStructuralFeature.class);
-		assertThat(warnings.get(1)).isInstanceOf(IgnoredStructuralFeature.class);
-		
-		EObject morph = resource.getEObject(elementId);
-		
-		assertThat(morph)
-			.isNotNull()
-			.isInstanceOf(CallActivity.class)
-			.isEqualTo(bpmnShape.getBpmnElement());
+		assertThat(warnings).isEmpty();
 	}	
 	
 	@Test

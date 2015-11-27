@@ -73,7 +73,7 @@ public class ImportBrokenModelTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = createModelImport();
 		importer.execute();
 
-		assertThat(importer.getImportWarnings()).isNotEmpty();
+		assertThat(importer.getImportWarnings()).isEmpty();
 	}
 
 	@Test
@@ -82,6 +82,6 @@ public class ImportBrokenModelTest extends AbstractImportBpmnModelTest {
 		ModelImport importer = createModelImport();
 		importer.execute();
 
-		assertThat(importer.getImportWarnings()).isNotEmpty();
+		assertThat(importer.getImportWarnings()).isEmpty();
 	}
 }

@@ -2538,6 +2538,24 @@ public interface ModelPackage extends EPackage {
 	int CALL_ACTIVITY__START_QUANTITY = Bpmn2Package.CALL_ACTIVITY__START_QUANTITY;
 
 	/**
+	 * The feature id for the '<em><b>Incoming Conversation Links</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CALL_ACTIVITY__INCOMING_CONVERSATION_LINKS = Bpmn2Package.CALL_ACTIVITY__INCOMING_CONVERSATION_LINKS;
+
+	/**
+	 * The feature id for the '<em><b>Outgoing Conversation Links</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CALL_ACTIVITY__OUTGOING_CONVERSATION_LINKS = Bpmn2Package.CALL_ACTIVITY__OUTGOING_CONVERSATION_LINKS;
+
+	/**
 	 * The feature id for the '<em><b>Called Element Ref</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

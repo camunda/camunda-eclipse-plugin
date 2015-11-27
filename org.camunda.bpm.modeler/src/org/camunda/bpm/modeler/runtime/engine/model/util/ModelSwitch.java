@@ -137,6 +137,7 @@ public class ModelSwitch<T> extends Switch<T> {
 				T result = caseCallActivity(callActivity);
 				if (result == null) result = caseBpmn2_CallActivity(callActivity);
 				if (result == null) result = caseActivity(callActivity);
+				if (result == null) result = caseInteractionNode(callActivity);
 				if (result == null) result = caseFlowNode(callActivity);
 				if (result == null) result = caseFlowElement(callActivity);
 				if (result == null) result = caseBaseElement(callActivity);

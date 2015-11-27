@@ -11,6 +11,7 @@ import org.camunda.bpm.modeler.core.features.rules.RuleOperations.FromToModelOpe
 import org.camunda.bpm.modeler.core.features.rules.RuleOperations.Side;
 import org.camunda.bpm.modeler.core.utils.AnchorUtil;
 import org.camunda.bpm.modeler.core.utils.BusinessObjectUtil;
+import org.camunda.bpm.modeler.runtime.engine.model.CallActivity;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.BoundaryEvent;
@@ -32,6 +33,7 @@ import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.StartEvent;
+import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.emf.ecore.EClass;
@@ -376,7 +378,7 @@ public class ConnectionOperations {
 				return true;
 			}
 			
-			return source instanceof Task || source instanceof Participant;
+			return source instanceof Task || source instanceof CallActivity || source instanceof SubProcess || source instanceof Participant;
 		}
 		
 		@Override
@@ -440,7 +442,7 @@ public class ConnectionOperations {
 				return true;
 			}
 			
-			return target instanceof Task || target instanceof Participant;
+			return target instanceof Task || target instanceof CallActivity || target instanceof SubProcess || target instanceof Participant;
 		}
 		
 		@Override

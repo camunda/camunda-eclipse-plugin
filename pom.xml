@@ -72,7 +72,7 @@
 
 		<repository>
 			<id>eclipse-bpmn2</id>
-			<url>http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130822/</url>
+			<url>http://download.eclipse.org/modeling/mdt/bpmn2/updates/kepler/1.0.0/</url>
 			<layout>p2</layout>
 		</repository>
 	</repositories>
