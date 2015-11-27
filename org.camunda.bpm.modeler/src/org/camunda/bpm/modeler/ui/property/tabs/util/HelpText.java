@@ -24,28 +24,28 @@ public class HelpText {
 	public static final String ELEMENT_DEF_TABLE = "%ss can be defined below";
 
 	private static final String ASYNC_LINK_TO_USER_GUIDE = 
-			"http://docs.camunda.org/latest/guides/user-guide/#process-engine-transactions-in-processes-asynchronous-continuations";
+			"https://docs.camunda.org/manual/user-guide/process-engine/transactions-in-processes/#asynchronous-continuations";
 	
-	private static final String CALL_ACTIVITY_VARIABLES_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#subprocesses-call-activity-passing-variables";
-	private static final String CALL_ACTIVITY_BUSINESS_KEY_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#subprocesses-call-activity-passing-business-key";
+	private static final String CALL_ACTIVITY_VARIABLES_GUIDE = "https://docs.camunda.org/manual/reference/bpmn20/subprocesses/call-activity/#passing-variables";
+	private static final String CALL_ACTIVITY_BUSINESS_KEY_GUIDE = "https://docs.camunda.org/manual/reference/bpmn20/subprocesses/call-activity/#passing-business-key";
 
-	private static final String LINK_EVENT_DEFINITION_USER_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#events-link-events";
+	private static final String LINK_EVENT_DEFINITION_USER_GUIDE = "https://docs.camunda.org/manual/reference/bpmn20/events/link-events/";
 
-	private static final String COMPENSATION_THROWING_EVENT_USER_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#events-cancel-and-compensation-events-compensation-intermediate-throwing-event";
+	private static final String COMPENSATION_THROWING_EVENT_USER_GUIDE = "https://docs.camunda.org/manual/reference/bpmn20/events/cancel-and-compensation-events/#compensation-events";
 
-	private static final String MULTI_INSTANCE_USER_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#tasks-task-markers-multiple-instance";
+	private static final String MULTI_INSTANCE_USER_GUIDE = "https://docs.camunda.org/manual/reference/bpmn20/tasks/task-markers/#multiple-instance";
 
-	private static final String IS_LOOP_USER_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#tasks-task-markers-loops";
+	private static final String IS_LOOP_USER_GUIDE = "https://docs.camunda.org/manual/reference/bpmn20/tasks/task-markers/#loops";
 
-	private static final String SIGNAL_THROW_EVENT_USER_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#events-signal-events-signal-intermediate-throwing-event";
+	private static final String SIGNAL_THROW_EVENT_USER_GUIDE = "https://docs.camunda.org/manual/reference/bpmn20/events/signal-events/#throwing-signal-events";
 
-	private static final String FOLLOW_UP_DATE_USER_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#tasks-user-task-follow-up-date";
+	private static final String FOLLOW_UP_DATE_USER_GUIDE = "https://docs.camunda.org/manual/reference/bpmn20/tasks/user-task/#follow-up-date";
 	
-	private static final String DUE_DATE_USER_GUIDE = "http://docs.camunda.org/latest/api-references/bpmn20/#tasks-user-task-due-date";
+	private static final String DUE_DATE_USER_GUIDE = "https://docs.camunda.org/manual/reference/bpmn20/tasks/user-task/#due-date";
 
-	private static final String EXCLUSIVE_LINK_TO_USER_GUIDE = "http://docs.camunda.org/latest/guides/user-guide/#process-engine-the-job-executor-exclusive-jobs";
+	private static final String EXCLUSIVE_LINK_TO_USER_GUIDE = "https://docs.camunda.org/manual/user-guide/process-engine/the-job-executor/#exclusive-jobs";
 
-	private static final String FIELD_INJECTIONS_USER_GUIDE = "http://docs.camunda.org/latest/guides/user-guide/#process-engine-delegation-code-field-injection";
+	private static final String FIELD_INJECTIONS_USER_GUIDE = "https://docs.camunda.org/manual/user-guide/process-engine/delegation-code/#field-injection";
 
 	public static final String ASYNC_FLAG = String.format(
 			"More information on asynchronous continuation can be found in the <a href=\"%s\">user guide</a>.", ASYNC_LINK_TO_USER_GUIDE);
