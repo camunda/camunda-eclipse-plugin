@@ -78,7 +78,7 @@
 
 		<repository>
 			<id>eclipse-graphiti</id>
-			<url>http://archive.eclipse.org/graphiti/updates/0.9.2/</url>
+      <url>jar:https://app.camunda.com/nexus/content/repositories/thirdparty/org/eclipse/graphiti-update-site/0.9.2/graphiti-update-site-0.9.2.zip!/</url>
 			<layout>p2</layout>
 		</repository>
 
