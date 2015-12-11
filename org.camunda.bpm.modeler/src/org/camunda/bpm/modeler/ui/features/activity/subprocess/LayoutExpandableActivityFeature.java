@@ -13,10 +13,10 @@
 package org.camunda.bpm.modeler.ui.features.activity.subprocess;
 
 import org.camunda.bpm.modeler.core.features.activity.LayoutActivityFeature;
-import org.camunda.bpm.modeler.core.utils.GraphicsUtil;
 import org.eclipse.graphiti.datatypes.IRectangle;
 import org.eclipse.graphiti.features.IFeatureProvider;
-import org.eclipse.graphiti.mm.algorithms.Text;
+import org.eclipse.graphiti.features.context.ILayoutContext;
+import org.eclipse.graphiti.mm.algorithms.AbstractText;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -30,13 +30,18 @@ public class LayoutExpandableActivityFeature extends LayoutActivityFeature {
 	@Override
 	protected void layoutLabel(ContainerShape container, Shape labelShape, IRectangle bounds) {
 
-		Text text = (Text) labelShape.getGraphicsAlgorithm();
+		AbstractText text = (AbstractText) labelShape.getGraphicsAlgorithm();
 
-		int padding = 5;
-
-		int width = bounds.getWidth() - padding;
-		int height = Math.min(GraphicsUtil.getLabelHeight(text), bounds.getHeight() - padding);
-
-		Graphiti.getGaService().setLocationAndSize(text, padding, padding, width, height);
+		Graphiti.getGaService().setLocationAndSize(text, 5, 5, bounds.getWidth() - 10, bounds.getHeight() - 10);
 	}
+
+	@Override
+	protected void postLayoutShapeAndChildren(ContainerShape shape, ILayoutContext context) {
+		super.postLayoutShapeAndChildren(shape, context);
+
+		// bring all Groups, if any, back to front
+		repairGroupZOrder(context);
+	}
+	
+	
 }
